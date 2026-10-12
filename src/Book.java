@@ -30,16 +30,11 @@ public class Book implements Comparable<Book> {
 
     @Override
     public int compareTo(Book other) {
-      if(this.title.equals(other.title)) {
-          return this.isbn.compareTo(other.isbn);
-      }
-      /*
-         * STUDENT TASK 1
-         * Use the business rule from the assignment:
-         * 1. title is the main comparison
-         * 2. ISBN is used when two titles are equal
-         */
-      return this.title.compareTo(other.title);
+        int titleComparison = this.title.compareTo(other.title);
+        if (titleComparison != 0) {
+            return titleComparison;
+        }
+        return this.isbn.compareTo(other.isbn);
     }
 
     @Override

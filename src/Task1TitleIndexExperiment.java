@@ -1,83 +1,75 @@
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Task1TitleIndexExperiment {
 
     public static void main(String[] args) {
         List<Book> books = AssignmentData.fiveBooks();
 
-        BinarySearchTree<Book> originalOrder = new BinarySearchTree<>();
+        // 1) Bygger BST med opprinnelig innsettingsrekkefølge fra AssignmentData.
+        BinarySearchTree<Book> originalOrderTree = new BinarySearchTree<>();
         for (Book book : books) {
-            originalOrder.insert(book);
+            originalOrderTree.insert(book);
         }
 
-        System.out.println("=== Original insertion order ===");
-        System.out.println("size = " + originalOrder.size());
-        System.out.println("height = " + originalOrder.height());
-        System.out.println("in-order:");
-        originalOrder.inOrder();
+        // 2) Demonstrerer at in-order traversal gir alfabetisk tittelrekkefølge.
+        System.out.println("=== Original insertion order: in-order traversal ===");
+        originalOrderTree.inOrder();
 
-        Book valgtBok = books.get(2);
+        // 3) Demonstrerer søk: én bok som finnes og én som ikke finnes.
+        Book existingBook = books.get(2); // The Pragmatic Programmer
+        Book foundBook = originalOrderTree.search(existingBook);
+        System.out.println("\nSearch (exists): " + foundBook);
+        System.out.println("Comparisons (exists): " + originalOrderTree.getLastSearchComparisons());
 
-        Book resultat = originalOrder.search(valgtBok);
-        System.out.println("search result = " + resultat);
-        System.out.println("search comparisons = " + originalOrder.getLastSearchComparisons());
+        Book missingBook = new Book("0000000000000", "Not In Catalogue", "Unknown", 0);
+        Book missingResult = originalOrderTree.search(missingBook);
+        System.out.println("\nSearch (missing): " + missingResult);
+        System.out.println("Comparisons (missing): " + originalOrderTree.getLastSearchComparisons());
 
-        Book ikkeFunnet= new Book(
-            "not-found-isbn", 
-            "en bok som ikke finnes",
-            null,
-            0);
+        // 4) Demonstrerer sletting av "Clean Code" og at treet fortsatt kan traverseres riktig.
+        Book cleanCode = books.get(1);
+        originalOrderTree.delete(cleanCode);
+        System.out.println("\n=== After deleting Clean Code ===");
+        originalOrderTree.inOrder();
 
-
-        Book resultatIkkeFunnet = originalOrder.search(ikkeFunnet);
-        System.out.println("search result (not found) = " + resultatIkkeFunnet);
-        System.out.println("search comparisons (not found) = " + originalOrder.getLastSearchComparisons()); 
-
-        Book cleanCode= books.get(1 );
-        boolean deletedBook = originalOrder.delete(cleanCode);
-        System.out.println("deleted book = " + (deletedBook ? cleanCode : null));
-        System.out.println("size after deletion = " + originalOrder.size());
-        System.out.println("height after deletion = " + originalOrder.height());
-        System.out.println("in-order after deletion:");
-        originalOrder.inOrder();
-
-        BinarySearchTree<Book> rebuiltOrder = new BinarySearchTree<>();
+        // 5) Bygger treet på nytt, sletter "Effective Java", og skriver ut resultatet.
+        BinarySearchTree<Book> rebuiltTree = new BinarySearchTree<>();
         for (Book book : books) {
-            rebuiltOrder.insert(book);
+            rebuiltTree.insert(book);
         }
         Book effectiveJava = books.get(0);
-        boolean deletedEffectiveJava =
-        rebuiltOrder.delete(effectiveJava);
-        System.out.println("deleted book =" + (deletedEffectiveJava ?
-            effectiveJava : null));
-        System.out.println("size after deletion = " + rebuiltOrder.size());
-        System.out.println("height after deletion = " + rebuiltOrder.height());
-        System.out.println("in-order after deletion:");
-        rebuiltOrder.inOrder();
+        rebuiltTree.delete(effectiveJava);
+        System.out.println("\n=== Rebuilt tree, after deleting Effective Java ===");
+        rebuiltTree.inOrder();
 
-        System.out.println("==Alphabetical title order==");
-        BinarySearchTree<Book> alphabeticalOrder = new BinarySearchTree<>();
-    
-        alphabeticalOrder.insert(books.get(3)); //algorythms
-        alphabeticalOrder.insert(books.get(1)); //clean code
-        alphabeticalOrder.insert(books.get(0)); //effective java
-        alphabeticalOrder.insert(books.get(4)); //head first Java
-        alphabeticalOrder.insert(books.get(2)); //Pragmatic Programmer
+        // 6) Bygger nytt tre med samme bøker i alfabetisk tittelrekkefølge.
+        List<Book> alphabeticallySortedBooks = new ArrayList<>(books);
+        alphabeticallySortedBooks.sort(Comparator.comparing(Book::getTitle).thenComparing(Book::getIsbn));
 
-        System.out.println("size = " + alphabeticalOrder.size());
-        System.out.println("height = " + alphabeticalOrder.height());
-        System.out.println("in-order:");
-        alphabeticalOrder.inOrder();
+        BinarySearchTree<Book> alphabeticalOrderTree = new BinarySearchTree<>();
+        for (Book book : alphabeticallySortedBooks) {
+            alphabeticalOrderTree.insert(book);
+        }
 
-        Book searchAlphabetical = books.get(0);
-        Book resultAlphabetical = alphabeticalOrder.search(searchAlphabetical);
-        System.out.println("search result (alphabetical) = " + resultAlphabetical);
-        System.out.println("search comparisons (alphabetical) = " + alphabeticalOrder.getLastSearchComparisons());
-        /*
-         * STUDENT TASK 1 EXPERIMENT
-         * Build a second tree with the same books inserted in
-         * alphabetical title order. Predict before running.
-         * Compare size, height, in-order output, and one search count.
-         */
+        // 7) Demonstrerer eksperimentet: høyde + søkesammenligninger for "The Pragmatic Programmer".
+        Book pragmaticProgrammer = books.get(2);
+
+        originalOrderTree = new BinarySearchTree<>();
+        for (Book book : books) {
+            originalOrderTree.insert(book);
+        }
+        originalOrderTree.search(pragmaticProgrammer);
+
+        alphabeticalOrderTree.search(pragmaticProgrammer);
+
+        System.out.println("\n=== Experiment: same books, different insertion order ===");
+        System.out.println("Original order tree height: " + originalOrderTree.height());
+        System.out.println("Original order search comparisons (The Pragmatic Programmer): "
+            + originalOrderTree.getLastSearchComparisons());
+        System.out.println("Alphabetical order tree height: " + alphabeticalOrderTree.height());
+        System.out.println("Alphabetical order search comparisons (The Pragmatic Programmer): "
+            + alphabeticalOrderTree.getLastSearchComparisons());
     }
 }

@@ -43,6 +43,9 @@ public class Task5PerformanceExperiment {
                 "Tree B: size=" + treeB.size()
                         + " height=" + treeB.height()
                         + " searchComparisons=" + comparisonsB);
+
+        System.out.println("Explanation: Tree B is inserted in ascending order, so it becomes more skewed.");
+        System.out.println("A taller/skewed BST usually needs more comparisons for search.");
     }
 
     private static void hashTableExperiment() {
@@ -58,17 +61,35 @@ public class Task5PerformanceExperiment {
             tableB.put(key, "V" + key);
         }
 
+        // Bucket-fordeling: viser hvor mange elementer som havner i hver relevant bucket.
+        System.out.println("Bucket distribution (capacity 11):");
+        printBucketDistribution(tableA, keys);
+        System.out.println("Bucket distribution (capacity 53):");
+        printBucketDistribution(tableB, keys);
+
         tableA.get(78);
         int comparisonsA = tableA.getLastGetComparisons();
         tableB.get(78);
         int comparisonsB = tableB.getLastGetComparisons();
 
         System.out.printf(
-                "Capacity 11: size=%d loadFactor=%.3f comparisons=%d%n",
+                "Capacity 11: size=%d loadFactor=%.3f get(78) comparisons=%d%n",
                 tableA.size(), tableA.loadFactor(), comparisonsA);
 
         System.out.printf(
-                "Capacity 53: size=%d loadFactor=%.3f comparisons=%d%n",
+                "Capacity 53: size=%d loadFactor=%.3f get(78) comparisons=%d%n",
                 tableB.size(), tableB.loadFactor(), comparisonsB);
+
+        System.out.println("Explanation: Better key distribution gives fewer collisions and often fewer get() comparisons.");
+        System.out.println("Lower load factor helps by reducing crowding, but perfect performance is not guaranteed.");
+        System.out.println("If many keys still collide in the same bucket, get() can still require multiple comparisons.");
+    }
+
+    private static void printBucketDistribution(HashTable<Integer, String> table, int[] keys) {
+        for (int key : keys) {
+            int index = table.bucketIndex(key);
+            int bucketSize = table.bucketSize(index);
+            System.out.println("key " + key + " -> bucket " + index + " (bucketSize=" + bucketSize + ")");
+        }
     }
 }

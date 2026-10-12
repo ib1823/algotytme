@@ -18,12 +18,28 @@ public class CatalogueAnalytics {
     }
 
     public void analyze(List<Book> batch) {
-        /*
-         * STUDENT TASK 4
-         * Apply Set and Map to the incoming batch problem.
-         */
-        throw new UnsupportedOperationException(
-                "TODO Task 4: implement analyze()");
+        seenIsbns.clear();
+        duplicateIsbns.clear();
+        uniqueAuthors.clear();
+        booksPerYear.clear();
+        inputRecordCount = 0;
+        uniqueBookCount = 0;
+
+        for (Book book : batch) {
+            inputRecordCount++;
+
+            String isbn = book.getIsbn();
+            if (seenIsbns.contains(isbn)) {
+                duplicateIsbns.add(isbn);
+                continue;
+            }
+
+            seenIsbns.add(isbn);
+            uniqueBookCount++;
+
+            uniqueAuthors.add(book.getAuthor());
+            booksPerYear.merge(book.getYear(), 1, Integer::sum);
+        }
     }
 
     public int getInputRecordCount() {

@@ -9,6 +9,7 @@ public class Task4AnalyticsExperiment {
     public static void main(String[] args) {
         List<Book> batch = AssignmentData.batchWithDuplicates();
 
+        // Samme data, ulik Map-type: viser at utskriftsrekkefølgen kan variere.
         runOne(batch, new HashMap<>());
         System.out.println();
         runOne(batch, new LinkedHashMap<>());
@@ -17,6 +18,7 @@ public class Task4AnalyticsExperiment {
     }
 
     private static void runOne(List<Book> batch, Map<Integer, Integer> map) {
+        // Én analysekjøring over batchen med valgt Map-implementasjon.
         CatalogueAnalytics analytics = new CatalogueAnalytics(map);
         analytics.analyze(batch);
 

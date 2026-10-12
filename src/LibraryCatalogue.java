@@ -9,34 +9,36 @@ public class LibraryCatalogue {
     }
 
     public boolean addBook(Book book) {
-        /* STUDENT TASK 3: keep both indexes consistent. */
-        throw new UnsupportedOperationException(
-                "TODO Task 3: implement addBook()");
+        if (isbnIndex.containsKey(book.getIsbn())) {
+            return false;
+        }
+
+        titleIndex.insert(book);
+        isbnIndex.put(book.getIsbn(), book);
+        return true;
     }
 
     public Book findByIsbn(String isbn) {
-        /* STUDENT TASK 3: use the most suitable index. */
-        throw new UnsupportedOperationException(
-                "TODO Task 3: implement findByIsbn()");
+        return isbnIndex.get(isbn);
     }
 
     public boolean removeBook(String isbn) {
-        /*
-         * STUDENT TASK 3
-         * Hint: obtain the Book object before removing the ISBN entry.
-         */
-        throw new UnsupportedOperationException(
-                "TODO Task 3: implement removeBook()");
+        Book bookToRemove = isbnIndex.get(isbn);
+        if (bookToRemove == null) {
+            return false;
+        }
+
+        boolean removedFromTitleIndex = titleIndex.delete(bookToRemove);
+        Book removedFromIsbnIndex = isbnIndex.remove(isbn);
+        return removedFromTitleIndex && removedFromIsbnIndex != null;
     }
 
     public void printAllByTitle() {
-        throw new UnsupportedOperationException(
-                "TODO Task 3: implement printAllByTitle()");
+        titleIndex.inOrder();
     }
 
     public int size() {
-        throw new UnsupportedOperationException(
-                "TODO Task 3: implement size()");
+        return isbnIndex.size();
     }
 
     public int titleIndexSize() {
